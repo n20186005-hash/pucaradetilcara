@@ -12,7 +12,26 @@ const { locale } = Astro.params as { locale: Locale };
 const t = translations[locale];
 const seo = getSeo(locale);
 const MAPS_URL = 'https://maps.app.goo.gl/Lph5S4oK351NebtFA';
-const galleryImages = (galleryImagesData as string[]).map((src) => ({ src }));
+const GALLERY_PLAN = [
+  { key: 'fortress', from: 0, to: 5 },
+  { key: 'artifacts', from: 6, to: 10 },
+  { key: 'cactus', from: 11, to: 14 },
+  { key: 'canyon', from: 15, to: 19 },
+];
+function categoryForIndex(i: number): string {
+  const plan = GALLERY_PLAN.find((p) => i >= p.from && i <= p.to);
+  return plan ? plan.key : 'fortress';
+}
+const galleryImages = (galleryImagesData as string[]).map((src, i) => ({ src, category: categoryForIndex(i) }));
+const ALL_LABELS: Record<Locale, string> = { zh: '全部', en: 'All', es: 'Todas', it: 'Tutte' };
+
+const MARKER_POS: Record<string, { top: string; left: string }> = {
+  entrada: { top: '74%', left: '16%' },
+  iglesia: { top: '56%', left: '38%' },
+  monumento: { top: '28%', left: '54%' },
+  corrales: { top: '70%', left: '70%' },
+  necrópolis: { top: '44%', left: '84%' },
+};
 
 const LANG_LABELS: Record<Locale, string> = { zh: '中文', en: 'EN', es: 'ES', it: 'IT' };
 
@@ -71,6 +90,8 @@ const transportSections = [
         <a href="#reviews">{t.nav.reviews}</a>
         <a href="#faq">{t.nav.faq}</a>
         <a href="#location">{t.nav.location}</a>
+        <a href="#sitemap">{t.siteMap.title}</a>
+        <a href="#itinerary">{t.itinerary.title}</a>
       </div>
       <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme" type="button">
         <span class="theme-icon-sun">
@@ -133,6 +154,10 @@ const transportSections = [
           <path d="M7 17L17 7M17 7H7M17 7V17"></path>
         </svg>
       </a>
+      <div class="hero-cta-group">
+        <a href="#visiting" class="hero-cta-secondary">{t.visiting.title}</a>
+        <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" class="hero-cta-secondary">{t.location.openMaps}</a>
+      </div>
     </div>
     <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;">
       <div class="hero-meta">
@@ -341,6 +366,21 @@ const transportSections = [
         </div>
       </div>
       <div class="reveal">
+        <div class="essentials-grid">
+          {
+            t.visiting.essentials.map((e) => (
+              <div class="essentials-card">
+                <div class="essentials-icon">{e.icon}</div>
+                <div>
+                  <div class="essentials-title">{e.title}</div>
+                  <div class="essentials-text">{e.text}</div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+      <div class="reveal">
         <div class="bring-section" style="margin-top:3rem;">
           <div class="bring-title">{t.visiting.tips.title}</div>
           <ul class="bring-list">
@@ -446,10 +486,20 @@ const transportSections = [
       galleryImages.length > 0 && (
         <>
           <div class="reveal">
-            <div class="gallery-grid">
+            <div class="gallery-filters" id="gallery-filters">
+              <button class="gallery-filter active" data-filter="all" type="button">{ALL_LABELS[locale]}</button>
+              {
+                t.gallery.categories.map((c) => (
+                  <button class="gallery-filter" data-filter={c.key} type="button">{c.label}</button>
+                ))
+              }
+            </div>
+          </div>
+          <div class="reveal">
+            <div class="gallery-grid" id="gallery-grid">
               {
                 galleryImages.map((item, i) => (
-                  <div class="gallery-item" data-index={i}>
+                  <div class="gallery-item" data-index={i} data-category={item.category}>
                     <img src={item.src} alt={`Pucará de Tilcara gallery image ${i + 1}`} loading="lazy" />
                   </div>
                 ))
@@ -600,6 +650,86 @@ const transportSections = [
     </div>
   </section>
 
+  <!-- CTA Band -->
+  <section class="cta-band">
+    <div class="cta-band-inner reveal">
+      <h2 class="cta-band-title">{t.ctaBand.title}</h2>
+      <p class="cta-band-subtitle">{t.ctaBand.subtitle}</p>
+      <div class="cta-band-buttons">
+        <a href="#visiting" class="cta-btn cta-btn-primary">{t.ctaBand.buttons[0]}</a>
+        <a href="https://tilcara.filo.uba.ar" target="_blank" rel="noopener noreferrer" class="cta-btn">{t.ctaBand.buttons[1]}</a>
+        <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" class="cta-btn">{t.ctaBand.buttons[2]}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Site Map -->
+  <section id="sitemap" class="section">
+    <div class="reveal">
+      <p class="section-label">12</p>
+      <h2 class="section-title">{t.siteMap.title}</h2>
+      <p class="about-text" style="white-space:pre-line;margin-bottom:1rem;" set:html={renderText(t.siteMap.intro)}></p>
+      <div class="sitemap-hint">{t.siteMap.hint}</div>
+    </div>
+    <div class="reveal">
+      <div class="sitemap-wrap">
+        <div class="sitemap-map" id="sitemap-map">
+          <svg class="sitemap-svg" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <linearGradient id="hillGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d9a86a" />
+                <stop offset="100%" stop-color="#b56532" />
+              </linearGradient>
+            </defs>
+            <path d="M0,300 L0,210 C60,180 90,150 150,160 C200,168 230,120 300,130 C350,137 380,110 400,120 L400,300 Z" fill="url(#hillGrad)" opacity="0.85" />
+            <path d="M0,300 L0,240 C80,225 120,205 180,212 C250,220 300,200 400,210 L400,300 Z" fill="#a8531f" opacity="0.5" />
+            <path d="M40,260 C120,235 200,250 280,225 C320,213 360,225 390,215" stroke="#faf7f2" stroke-width="2" fill="none" opacity="0.5" stroke-dasharray="4 6" />
+            <path d="M70,150 C140,170 220,150 300,135" stroke="#faf7f2" stroke-width="1.5" fill="none" opacity="0.35" stroke-dasharray="3 7" />
+          </svg>
+          {
+            t.siteMap.zones.map((z, i) => (
+              <button class="sitemap-marker" type="button" data-zone={z.key}
+                data-name={z.name} data-desc={z.desc}
+                style={`top:${MARKER_POS[z.key].top};left:${MARKER_POS[z.key].left};`}>
+                {i + 1}
+              </button>
+            ))
+          }
+        </div>
+        <div class="sitemap-detail" id="sitemap-detail">
+          <div class="sitemap-detail-index" id="sitemap-detail-index">01</div>
+          <h3 class="sitemap-detail-name" id="sitemap-detail-name"></h3>
+          <p class="sitemap-detail-desc" id="sitemap-detail-desc"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Itinerary -->
+  <section id="itinerary" class="section" style="background:rgba(0,0,0,0.02);">
+    <div class="reveal">
+      <p class="section-label">13</p>
+      <h2 class="section-title">{t.itinerary.title}</h2>
+      <p class="about-text" style="white-space:pre-line;margin-bottom:3rem;" set:html={renderText(t.itinerary.intro)}></p>
+    </div>
+    <div class="reveal">
+      <div class="timeline">
+        {
+          t.itinerary.steps.map((s) => (
+            <div class="timeline-item">
+              <div class="timeline-time">{s.time}</div>
+              <div class="timeline-marker"><span class="timeline-dot"></span></div>
+              <div class="timeline-card">
+                <h4 class="timeline-title">{s.title}</h4>
+                <p class="timeline-text">{s.text}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="site-footer">
     <div class="footer-links">
@@ -631,6 +761,7 @@ const transportSections = [
     <button id="lightbox-close" class="lightbox-close" type="button">×</button>
     <button id="lightbox-prev" class="lightbox-prev" type="button">‹</button>
     <img id="lightbox-img" class="lightbox-img" src="" alt="" />
+    <div id="lightbox-caption" class="lightbox-caption"></div>
     <button id="lightbox-next" class="lightbox-next" type="button">›</button>
   </div>
 </BaseLayout>
