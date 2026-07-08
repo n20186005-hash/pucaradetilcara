@@ -26,13 +26,60 @@ export type Translations = {
   footer: { callToAction: string; text: string; made: string; linksTitle: string; links: LinkItem[] };
 };
 
-const PUCA_LINKS: LinkItem[] = [
-  { name: "布宜诺斯艾利斯大学蒂尔卡拉中心 (Centro Universitario Tilcara - UBA)", url: "https://tilcara.filo.uba.ar/pucará-de-tilcara" },
-  { name: "阿根廷国家政府官网 - 蒂尔卡拉古堡专页 (Argentina.gob.ar)", url: "https://www.argentina.gob.ar/capital-humano/cultura/monumentos/sitio-arqueologico-pucara-de-tilcara" },
-  { name: "联合国教科文组织世界遗产 - 乌马瓦卡峡谷 (UNESCO World Heritage)", url: "https://whc.unesco.org/es/list/1116/" },
-  { name: "胡胡伊省文化与旅游部 (Ministerio de Cultura y Turismo de Jujuy)", url: "https://culturayturismo.jujuy.gob.ar" },
-  { name: "阿根廷国家旅游局 (Visit Argentina)", url: "https://www.argentina.travel" },
+const LINK_DEFS: { url: string; names: Record<Locale, string> }[] = [
+  {
+    url: "https://tilcara.filo.uba.ar/pucará-de-tilcara",
+    names: {
+      zh: "布宜诺斯艾利斯大学蒂尔卡拉中心 (Centro Universitario Tilcara - UBA)",
+      en: "Centro Universitario Tilcara - UBA (University of Buenos Aires)",
+      es: "Centro Universitario Tilcara - UBA",
+      it: "Centro Universitario Tilcara - UBA",
+    },
+  },
+  {
+    url: "https://www.argentina.gob.ar/capital-humano/cultura/monumentos/sitio-arqueologico-pucara-de-tilcara",
+    names: {
+      zh: "阿根廷国家政府官网 - 蒂尔卡拉古堡专页 (Argentina.gob.ar)",
+      en: "Argentina National Government - Pucará de Tilcara (Argentina.gob.ar)",
+      es: "Sitio oficial del Gobierno de Argentina - Pucará de Tilcara (Argentina.gob.ar)",
+      it: "Sito ufficiale del Governo argentino - Pucará de Tilcara (Argentina.gob.ar)",
+    },
+  },
+  {
+    url: "https://whc.unesco.org/es/list/1116/",
+    names: {
+      zh: "联合国教科文组织世界遗产 - 乌马瓦卡峡谷 (UNESCO World Heritage)",
+      en: "UNESCO World Heritage - Quebrada de Humahuaca",
+      es: "Patrimonio Mundial de la UNESCO - Quebrada de Humahuaca",
+      it: "Patrimonio Mondiale UNESCO - Quebrada de Humahuaca",
+    },
+  },
+  {
+    url: "https://culturayturismo.jujuy.gob.ar",
+    names: {
+      zh: "胡胡伊省文化与旅游部 (Ministerio de Cultura y Turismo de Jujuy)",
+      en: "Ministry of Culture and Tourism of Jujuy",
+      es: "Ministerio de Cultura y Turismo de Jujuy",
+      it: "Ministero della Cultura e del Turismo di Jujuy",
+    },
+  },
+  {
+    url: "https://www.argentina.travel",
+    names: {
+      zh: "阿根廷国家旅游局 (Visit Argentina)",
+      en: "Argentina National Tourism (Visit Argentina)",
+      es: "Turismo de Argentina (Visit Argentina)",
+      it: "Turismo dell'Argentina (Visit Argentina)",
+    },
+  },
 ];
+
+const LINKS_BY_LOCALE: Record<Locale, LinkItem[]> = {
+  zh: LINK_DEFS.map((d) => ({ name: d.names.zh, url: d.url })),
+  en: LINK_DEFS.map((d) => ({ name: d.names.en, url: d.url })),
+  es: LINK_DEFS.map((d) => ({ name: d.names.es, url: d.url })),
+  it: LINK_DEFS.map((d) => ({ name: d.names.it, url: d.url })),
+};
 
 export const translations: Record<Locale, Translations> = {
   zh: {
@@ -187,7 +234,7 @@ export const translations: Record<Locale, Translations> = {
       { question: "蒂尔卡拉古堡和乌马瓦卡峡谷是什么关系？", answer: "Pucará de Tilcara 位于乌马瓦卡峡谷（Quebrada de Humahuaca）中段。该峡谷于 2003 年被联合国教科文组织列为世界文化遗产，而 Pucará de Tilcara 是峡谷内规模最大、保存最完好的前印加考古遗址。" }
     ]},
     location: { title: "地图位置", address: "Y4624 Tilcara\nJujuy Province\nArgentina\n阿根廷胡胡伊省蒂尔卡拉", openMaps: "在 Google Maps 查看位置" },
-    footer: { callToAction: "Pucará de Tilcara 是乌马瓦卡峡谷世界遗产的重要组成部分，也是前印加文明的杰出见证。请与我们一同守护这座千年古堡，让历史在石墙间永恒回响。", text: "© 2026 蒂尔卡拉古堡指南 · 保留所有权利。\n本网站是一个独立的第三方非盈利科普指南项目，致力于准确传播 Pucará de Tilcara 的信息。我们与阿根廷政府、布宜诺斯艾利斯大学或任何官方机构均无隶属关系。", made: "本网站是一个独立的非盈利科普项目，为探索者、学习者和文化爱好者而建。", linksTitle: "友情链接", links: PUCA_LINKS },
+    footer: { callToAction: "Pucará de Tilcara 是乌马瓦卡峡谷世界遗产的重要组成部分，也是前印加文明的杰出见证。请与我们一同守护这座千年古堡，让历史在石墙间永恒回响。", text: "© 2026 蒂尔卡拉古堡指南 · 保留所有权利。\n本网站是一个独立的第三方非盈利科普指南项目，致力于准确传播 Pucará de Tilcara 的信息。我们与阿根廷政府、布宜诺斯艾利斯大学或任何官方机构均无隶属关系。", made: "本网站是一个独立的非盈利科普项目，为探索者、学习者和文化爱好者而建。", linksTitle: "友情链接", links: LINKS_BY_LOCALE.zh },
     siteMap: {
       title: "互动遗址地图",
       intro: "将鼠标悬停（或点按）下方地图中的标记，即可探索 Pucará de Tilcara 的五大核心区域。",
@@ -370,7 +417,7 @@ It is worth noting that this pyramid monument (Pirámide trunca, the truncated p
       { question: "What is the relationship between Pucará de Tilcara and the Quebrada de Humahuaca?", answer: "Pucará de Tilcara lies in the middle section of the Quebrada de Humahuaca. The gorge was declared a UNESCO World Heritage Site in 2003, and Pucará de Tilcara is the largest and best-preserved pre-Inca archaeological site within the gorge." }
     ]},
     location: { title: "Map Location", address: "Y4624 Tilcara\nJujuy Province\nArgentina", openMaps: "View on Google Maps" },
-    footer: { callToAction: "Pucará de Tilcara is a jewel of the Quebrada de Humahuaca World Heritage Site and an extraordinary testimony to pre-Inca civilisation. Please join us in protecting this millenary fortress so that history may echo through its stone walls for ever.", text: "© 2026 Pucará de Tilcara Guide · All rights reserved.\nThis website is an independent third-party non-profit educational guide dedicated to sharing accurate information about Pucará de Tilcara. We are not affiliated with the Argentine government, the University of Buenos Aires, or any official authority.", made: "This is an independent non-profit educational project, made for explorers, learners and culture enthusiasts.", linksTitle: "Friendly Links", links: PUCA_LINKS },
+    footer: { callToAction: "Pucará de Tilcara is a jewel of the Quebrada de Humahuaca World Heritage Site and an extraordinary testimony to pre-Inca civilisation. Please join us in protecting this millenary fortress so that history may echo through its stone walls for ever.", text: "© 2026 Pucará de Tilcara Guide · All rights reserved.\nThis website is an independent third-party non-profit educational guide dedicated to sharing accurate information about Pucará de Tilcara. We are not affiliated with the Argentine government, the University of Buenos Aires, or any official authority.", made: "This is an independent non-profit educational project, made for explorers, learners and culture enthusiasts.", linksTitle: "Friendly Links", links: LINKS_BY_LOCALE.en },
     siteMap: {
       title: "Interactive Site Map",
       intro: "Hover over (or tap) the markers on the map below to explore the five core areas of Pucará de Tilcara.",
@@ -553,7 +600,7 @@ Cabe señalar que esta pirámide (Pirámide trunca, la pirámide truncada) muest
       { question: "¿Cuál es la relación entre el Pucará y la Quebrada de Humahuaca?", answer: "El Pucará de Tilcara está ubicado en el tramo medio de la Quebrada de Humahuaca. La quebrada fue declarada Patrimonio de la Humanidad por la UNESCO en 2003, y el Pucará es el sitio arqueológico preincaico más grande y mejor conservado dentro de la quebrada." }
     ]},
     location: { title: "Ubicación", address: "Y4624 Tilcara\nProvincia de Jujuy\nArgentina", openMaps: "Ver en Google Maps" },
-    footer: { callToAction: "El Pucará de Tilcara es una joya de la Quebrada de Humahuaca, Patrimonio de la Humanidad, y un testimonio extraordinario de la civilización preincaica. Sumate a nosotros para proteger esta fortaleza milenaria y que la historia siga resonando entre sus muros de piedra.", text: "© 2026 Guía de Pucará de Tilcara · Todos los derechos reservados.\nEste sitio web es una guía educativa independiente sin fines de lucro dedicada a difundir información precisa sobre el Pucará de Tilcara. No estamos afiliados con el gobierno argentino, la Universidad de Buenos Aires ni ninguna autoridad oficial.", made: "Este es un proyecto educativo independiente sin fines de lucro, creado para exploradores, aprendices y amantes de la cultura.", linksTitle: "Enlaces Amigos", links: PUCA_LINKS },
+    footer: { callToAction: "El Pucará de Tilcara es una joya de la Quebrada de Humahuaca, Patrimonio de la Humanidad, y un testimonio extraordinario de la civilización preincaica. Sumate a nosotros para proteger esta fortaleza milenaria y que la historia siga resonando entre sus muros de piedra.", text: "© 2026 Guía de Pucará de Tilcara · Todos los derechos reservados.\nEste sitio web es una guía educativa independiente sin fines de lucro dedicada a difundir información precisa sobre el Pucará de Tilcara. No estamos afiliados con el gobierno argentino, la Universidad de Buenos Aires ni ninguna autoridad oficial.", made: "Este es un proyecto educativo independiente sin fines de lucro, creado para exploradores, aprendices y amantes de la cultura.", linksTitle: "Enlaces Amigos", links: LINKS_BY_LOCALE.es },
     siteMap: {
       title: "Mapa Interactivo del Sitio",
       intro: "Pasá el cursor (o tocá) sobre los marcadores del mapa para explorar las cinco áreas centrales del Pucará de Tilcara.",
@@ -736,7 +783,7 @@ Va notato che questa piramide (Piramide trunca, la piramide troncata) presenta u
       { question: "Qual è la relazione tra il Pucará e la Quebrada de Humahuaca?", answer: "Il Pucará de Tilcara si trova nel tratto medio della Quebrada de Humahuaca. La quebrada è stata dichiarata Patrimonio dell'Umanità dall'UNESCO nel 2003, e il Pucará è il sito archeologico preincaico più grande e meglio conservato all'interno della quebrada." }
     ]},
     location: { title: "Posizione", address: "Y4624 Tilcara\nProvincia di Jujuy\nArgentina", openMaps: "Vedi su Google Maps" },
-    footer: { callToAction: "Il Pucará de Tilcara è un gioiello della Quebrada de Humahuaca, Patrimonio dell'Umanità, e una straordinaria testimonianza della civiltà preincaica. Unisciti a noi per proteggere questa fortezza millenaria affinché la storia continui a risuonare tra le sue mura di pietra.", text: "© 2026 Guida di Pucará de Tilcara · Tutti i diritti riservati.\nQuesto sito è una guida educativa indipendente senza scopo di lucro dedicata a diffondere informazioni accurate sul Pucará de Tilcara. Non siamo affiliati con il governo argentino, l'Università di Buenos Aires né alcuna autorità ufficiale.", made: "Questo è un progetto educativo indipendente non profit, creato per esploratori, apprendisti e amanti della cultura.", linksTitle: "Link Amici", links: PUCA_LINKS },
+    footer: { callToAction: "Il Pucará de Tilcara è un gioiello della Quebrada de Humahuaca, Patrimonio dell'Umanità, e una straordinaria testimonianza della civiltà preincaica. Unisciti a noi per proteggere questa fortezza millenaria affinché la storia continui a risuonare tra le sue mura di pietra.", text: "© 2026 Guida di Pucará de Tilcara · Tutti i diritti riservati.\nQuesto sito è una guida educativa indipendente senza scopo di lucro dedicata a diffondere informazioni accurate sul Pucará de Tilcara. Non siamo affiliati con il governo argentino, l'Università di Buenos Aires né alcuna autorità ufficiale.", made: "Questo è un progetto educativo indipendente non profit, creato per esploratori, apprendisti e amanti della cultura.", linksTitle: "Link Amici", links: LINKS_BY_LOCALE.it },
     siteMap: {
       title: "Mappa Interattiva del Sito",
       intro: "Passa il cursore (o tocca) sui marcatori della mappa per esplorare le cinque aree centrali del Pucará de Tilcara.",
